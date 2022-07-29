@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "735716728591",
+    "project_id": "getit-a81d0",
+    "storage_bucket": "getit-a81d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735716728591:android:c54f1f61f4ba680faa287a",
+        "android_client_info": {
+          "package_name": "dev.andrewohara.getit_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735716728591-u8tc4mg8ts7ccnathj66okgb2m4almpo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALfP7w2lqmRgcRiGzf6znCGbiyLe9wYfM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735716728591-u8tc4mg8ts7ccnathj66okgb2m4almpo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

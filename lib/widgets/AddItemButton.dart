@@ -12,19 +12,16 @@ class AddItemButton extends StatefulWidget {
 
 class _AddItemButtonState extends State<AddItemButton> {
 
-  final _textFieldController = TextEditingController();
-  String _name = "";
+  final _controller = TextEditingController();
 
   Future _showAddItem(BuildContext context) async {
-    setState(() { _name = "";});
-    _textFieldController.clear();
+    setState(() { _controller.text = "";});
 
     return showDialog(context: context, builder: (context) => AlertDialog(
       title: const Text('Add Item'),
       content: TextField(
-        onChanged: (value) => setState(() => _name = value),
         autofocus: true,
-        controller: _textFieldController,
+        controller: _controller,
       ),
       actions: <Widget>[
         TextButton(
@@ -34,13 +31,19 @@ class _AddItemButtonState extends State<AddItemButton> {
         TextButton(
           child: const Text('OK'),
           onPressed: () {
-            final data = ItemDataDto(name: _name, completed: false);
+            final data = ItemDataDto(name: _controller.text, completed: false);
             widget.createItem(data);
             Navigator.pop(context);
           },
         ),
       ],
     ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
   }
 
   @override
