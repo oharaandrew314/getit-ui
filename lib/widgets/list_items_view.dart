@@ -5,11 +5,13 @@ import 'package:getit_ui/widgets/item_view.dart';
 class ListItemsView extends StatelessWidget {
   final List<ItemDto> items;
   final Function(ItemDto, ItemDataDto) updateItem;
+  final Function(ItemDto) deleteItem;
   final Function? refreshItems;
 
   const ListItemsView({
     required this.items,
     required this.updateItem,
+    required this.deleteItem,
     this.refreshItems,
     Key? key
   }) : super(key: key);
@@ -24,7 +26,8 @@ class ListItemsView extends StatelessWidget {
             final item = items[index];
             return ItemView(
               item: item,
-              onUpdate: updateItem,
+              update: (data) => updateItem(item, data),
+              delete: () => deleteItem(item),
             );
           }
         ),

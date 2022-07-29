@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:getit_ui/screens/list_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
-
-final _googleSignIn = GoogleSignIn(
-  scopes: ['email'],
-);
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -14,62 +11,38 @@ class SignInScreen extends StatefulWidget {
 }
 
 class SignInScreenState extends State<SignInScreen> {
-  GoogleSignInAccount? _currentUser;
+
   final _log = Logger();
+  final _googleSignIn = GoogleSignIn(
+    scopes: ['email'],
+  );
 
   @override
   void initState() {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      setState(() {
-        _currentUser = account;
-      });
+      _log.i("Logged in with account: $account");
+      if (account == null) return;
+
+      Navigator.pushReplacement(context, ListScreen.createRoute(account));
+      // Navigator.pushReplacement(context, ListScreen.createRoute3(account));
     });
     _googleSignIn.signInSilently();
   }
 
-  Future<void> _handleSignIn() async {
-    try {
-      await _googleSignIn.signIn();
-    } catch (error) {
-      _log.e(error);
-    }
-  }
-
-  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+  // Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
   Widget _buildBody() {
-    final user = _currentUser;
-
-    if (user == null) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           const Text('You are not currently signed in.'),
           ElevatedButton(
-            onPressed: _handleSignIn,
+            onPressed: () => _googleSignIn.signIn(),
             child: const Text('SIGN IN'),
           ),
         ],
       );
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
-        ListTile(
-          leading: GoogleUserCircleAvatar(
-            identity: user,
-          ),
-          title: Text(user.displayName ?? ''),
-          subtitle: Text(user.email),
-        ),
-        ElevatedButton(
-          onPressed: _handleSignOut,
-          child: const Text('SIGN OUT'),
-        )
-      ],
-    );
   }
 
   @override

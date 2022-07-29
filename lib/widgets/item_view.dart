@@ -3,10 +3,15 @@ import 'package:getit_ui/client/dtos.dart';
 
 class ItemView extends StatefulWidget {
   final ItemDto item;
-  final Function(ItemDto, ItemDataDto) onUpdate;
+  final Function(ItemDataDto) update;
+  final Function() delete;
 
 
-  const ItemView({ required this.item, required this.onUpdate, Key? key}): super(key: key);
+  const ItemView({
+    required this.item,
+    required this.delete,
+    required this.update, Key? key
+  }): super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ItemViewState();
@@ -17,7 +22,7 @@ class _ItemViewState extends State<ItemView> {
 
   void _handleCheck(bool? completed) {
     final data = ItemDataDto(name: widget.item.name, completed: completed ?? false);
-    widget.onUpdate(widget.item, data);
+    widget.update(data);
   }
 
   @override
@@ -47,8 +52,14 @@ class _ItemViewState extends State<ItemView> {
           child: SizedBox(
             width: 100,
             child: TextField(
-                controller: _controller
+              controller: _controller
             )
+          )
+        ),
+        Expanded(
+          child: IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => widget.delete(),
           )
         )
       ]
