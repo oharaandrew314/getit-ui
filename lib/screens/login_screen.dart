@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
 import 'package:getit_ui/screens/list_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -33,13 +35,32 @@ class LoginScreenState extends State<LoginScreen> {
 
   Widget _buildBody() {
       return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          const Text('You are not currently signed in.'),
-          ElevatedButton(
-            onPressed: () => _googleSignIn.signIn(),
-            child: const Text('SIGN IN'),
+          const Padding(
+            padding: EdgeInsets.all(20),
           ),
+          Padding(
+            padding: const EdgeInsets.all(5),
+            child: Text(
+              "GetIt",
+              style: Theme.of(context).textTheme.displayLarge
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text(
+                "Shopping Lists",
+              style: Theme.of(context).textTheme.displayMedium
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(20),
+          ),
+          SignInButton(
+            Buttons.Google,
+            onPressed: () => _googleSignIn.signIn()
+          )
         ],
       );
   }
@@ -48,7 +69,7 @@ class LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GetIt - Shopping Lists'),
+        title: const Text('Login'),
       ),
       body: ConstrainedBox(
         constraints: const BoxConstraints.expand(),

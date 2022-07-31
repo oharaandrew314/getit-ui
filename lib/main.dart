@@ -5,7 +5,12 @@ void main() {
   runApp(MaterialApp(
     title: 'GetIt - Shopping Lists',
     theme: ThemeData(
-      primarySwatch: Colors.blue,
+      primaryColor: Colors.lightBlue,
+      fontFamily: 'Roboto',
+      textTheme: const TextTheme(
+        displayLarge: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold, color: Colors.lightBlue),
+        displayMedium: TextStyle(fontSize: 32.0),
+      ),
     ),
     home: const LoginScreen(),
   ));
