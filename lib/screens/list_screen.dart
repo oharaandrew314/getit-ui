@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:getit_ui/client/client.dart';
 import 'package:getit_ui/client/dtos.dart';
+import 'package:getit_ui/screens/login_screen.dart';
 import 'package:getit_ui/widgets/AddItemButton.dart';
 import 'package:getit_ui/widgets/list_drawer.dart';
 import 'package:getit_ui/widgets/list_items_view.dart';
+import 'package:getit_ui/widgets/user_drawer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:collection/collection.dart';
+import 'package:logger/logger.dart';
 
 class ListScreen extends StatefulWidget {
 
@@ -18,12 +21,15 @@ class ListScreen extends StatefulWidget {
     Key? key
   }): super(key: key);
 
-  static Route createRoute(GoogleSignInAccount account) => PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => ListScreen(
-        account: account,
-        client: Client(account.id)
-      )
-  );
+  static Future<Route> createRoute(GoogleSignInAccount account) async {
+    final auth = await account.authentication;
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => ListScreen(
+          account: account,
+          client: Client(auth.idToken!)
+        )
+    );
+  }
 
   @override
   State<ListScreen> createState() => _ListScreenState();
@@ -31,6 +37,8 @@ class ListScreen extends StatefulWidget {
 
 
 class _ListScreenState extends State<ListScreen> {
+
+  final _googleSignIn = GoogleSignIn();
 
   List<ListDto> _lists = [];
   List<ItemDto> _items = [];
@@ -88,6 +96,11 @@ class _ListScreenState extends State<ListScreen> {
     });
   }
 
+  Future logout() async {
+    await _googleSignIn.signOut();
+    await Navigator.pushReplacement(context, LoginScreen.createRoute());
+  }
+
   @override
   void initState() {
     super.initState();
@@ -105,7 +118,7 @@ class _ListScreenState extends State<ListScreen> {
         appBar: AppBar(
           title: ListTile(
             title: Text(_currentList?.name ?? 'GetIt Lists'),
-            trailing: GoogleUserCircleAvatar(identity: widget.account)
+            trailing: UserDrawer(account: widget.account, logout: logout),
           )
         ),
         drawer: ListSelectorDrawer(

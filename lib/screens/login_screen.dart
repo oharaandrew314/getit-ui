@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:getit_ui/screens/list_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:logger/logger.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
+  static Route createRoute() => PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen()
+  );
 
   @override
-  State createState() => SignInScreenState();
+  State createState() => LoginScreenState();
 }
 
-class SignInScreenState extends State<SignInScreen> {
+class LoginScreenState extends State<LoginScreen> {
 
-  final _log = Logger();
   final _googleSignIn = GoogleSignIn(
     scopes: ['email'],
   );
@@ -20,17 +22,14 @@ class SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      _log.i("Logged in with account: $account");
-      if (account == null) return;
-
-      Navigator.pushReplacement(context, ListScreen.createRoute(account));
-      // Navigator.pushReplacement(context, ListScreen.createRoute3(account));
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+      final route = account == null
+        ? LoginScreen.createRoute()
+        : await ListScreen.createRoute(account);
+      Navigator.pushReplacement(context, route);
     });
     _googleSignIn.signInSilently();
   }
-
-  // Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
   Widget _buildBody() {
       return Column(
