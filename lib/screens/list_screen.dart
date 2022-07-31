@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:getit_ui/client/client.dart';
 import 'package:getit_ui/client/dtos.dart';
 import 'package:getit_ui/screens/login_screen.dart';
-import 'package:getit_ui/widgets/AddItemButton.dart';
+import 'package:getit_ui/widgets/dialogs.dart';
+import 'package:getit_ui/widgets/fabs.dart';
 import 'package:getit_ui/widgets/list_drawer.dart';
 import 'package:getit_ui/widgets/list_items_view.dart';
 import 'package:getit_ui/widgets/user_drawer.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:collection/collection.dart';
-import 'package:logger/logger.dart';
 
 class ListScreen extends StatefulWidget {
 
@@ -39,10 +39,17 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
 
   final _googleSignIn = GoogleSignIn();
+  final _dialogTextController = TextEditingController();
 
   List<ListDto> _lists = [];
   List<ItemDto> _items = [];
   ListDto? _currentList;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _dialogTextController.dispose();
+  }
 
   Future refreshLists({bool selectFirst = false}) async {
     final lists = await widget.client.getLists();
@@ -101,6 +108,15 @@ class _ListScreenState extends State<ListScreen> {
     await Navigator.pushReplacement(context, LoginScreen.createRoute());
   }
 
+  Future showCreateList() async {
+    showAddListDialog(context, _dialogTextController, createList);
+  }
+
+  Future createList(ListDataDto data) async {
+    final list = await widget.client.createList(data);
+    setState(() => _lists.add(list));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -121,9 +137,13 @@ class _ListScreenState extends State<ListScreen> {
             trailing: UserDrawer(account: widget.account, logout: logout),
           )
         ),
-        drawer: ListSelectorDrawer(
+        drawer: SafeArea(
+          child: ListSelectorDrawer(
             lists: _lists,
-            selectList: selectList
+            current: _currentList,
+            selectList: selectList,
+            createList: showCreateList,
+          )
         ),
         body: Center(
             child: ListItemsView(
